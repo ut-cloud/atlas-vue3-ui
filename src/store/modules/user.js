@@ -16,12 +16,14 @@ const useUserStore = defineStore(
     actions: {
       // 登录
       login(userInfo) {
-        const username = userInfo.username.trim()
+        const username = userInfo.username ? userInfo.username.trim(): ""
         const password = userInfo.password
         const code = userInfo.code
         const uuid = userInfo.uuid
+        const grantType = userInfo.grantType
+        const credential = userInfo.credential
         return new Promise((resolve, reject) => {
-          login(username, password, code, uuid).then(res => {
+          login(username, password, code, uuid, grantType, credential).then(res => {
             setToken(res.data.token)
             this.token = res.data.token
             resolve()
@@ -35,7 +37,7 @@ const useUserStore = defineStore(
         return new Promise((resolve, reject) => {
           getInfo().then(res => {
             const user = res.data.user
-            const avatar = (user.avatar == "" || user.avatar == null) ? defAva : import.meta.env.VITE_APP_BASE_API + user.avatar;
+            const avatar = (user.avatar == "" || user.avatar == null) ? defAva : user.avatar;
 
             if (res.data.roles && res.data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
               this.roles = res.data.roles
